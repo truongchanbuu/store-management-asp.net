@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <title>Store Management</title>
+    <link rel="icon" href="/img/SM_mini_logo.png" type="image/png"/>
+    <link rel="stylesheet" href="/css/bootstrap1.min.css"/>
+
+    <link rel="stylesheet" href="/vendors/themefy_icon/themify-icons.css"/>
+    <link rel="stylesheet" href="/vendors/niceselect/css/nice-select.css"/>
+
+    <link rel="stylesheet" href="/css/style1.css"/>
+
+    <!-- Axios for fetching data -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <style>
+        #sales-results-table tbody tr {
+            cursor: pointer;
+        }
+
+        #sales-results-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body class="crm_body_bg">
+<nav class="sidebar dark_sidebar active_sidebar">
+    <div class="logo d-flex justify-content-between">
+        <a class="large_logo" href="/Home"><img src="/img/SM_logo.png" alt=""></a>
+        <a class="small_logo" href="/Home"><img src="/img/SM_mini_logo.png" alt=""></a>
+        <div class="sidebar_close_icon d-lg-none">
+            <i class="ti-close"></i>
+        </div>
+    </div>
+    <ul id="sidebar_menu" class="metismenu">
+        <li class="">
+            <a class="" href="/Home" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/dashboard.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Welcome</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/customers" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/5.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Customers</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/products" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/13.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Products</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/reports" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/21.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Reports</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/orders" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/8.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Point of Sale</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="main_content dashboard_part large_header_bg">
+    <div class="container-fluid g-0">
+        <div class="row">
+            <div class="col-lg-12 p-0">
+
+                <div class="header_iner d-flex justify-content-end align-items-center">
+                    <div class="header_right d-flex justify-content-between align-items-center">
+                        <div class="profile_info mr_15 w-100">
+                            <img th:src="${user.getAvatar()}" alt="#">
+                            <div class="profile_info_iner">
+                                <div class="profile_author_name">
+                                    <p>Welcome, </p>
+                                    <h5 th:if="${user} != null" th:text="${user.getUsername()}"></h5>
+                                </div>
+                                <div class="profile_info_details">
+                                    <a th:href="@{/profile}">My Profile</a>
+                                    <a th:href="@{/admin/users}" th:if="${user.getRole().toString() != 'EMPLOYEE'}">User
+                                        Management
+                                    </a>
+                                    <a th:href="@{/owner}" th:if="${user.getRole().toString() == 'OWNER'}">
+                                        Dashboard
+                                    </a>
+                                    <br>
+                                    <a th:href="@{/auth/logout}">Log Out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="main_content_iner overly_inner">
+        <div class="container-fluid p-0">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="page_title_left d-flex align-items-center">
+                            <h3 class="f_s_25 f_w_700 dark_text mr_30">Reports</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="white_card mb_30 card_height_100">
+                        <div class="white_card_header">
+                            <div class="row align-items-center justify-content-between flex-wrap">
+                                <div class="col-lg-10">
+                                    <div class="main-title">
+                                        <h3 class="m-0">Business Result</h3>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <select id="date-range-select" class="nice_Select2 max-width-220">
+                                        <option value="today">Today</option>
+                                        <option value="yesterday">Yesterday</option>
+                                        <option value="last7days">Last 7 days</option>
+                                        <option value="thismonth">This month</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+
+                                    <div class="form-group d-none mt-5 w-100" id="customDateRange">
+                                        <label class="pt-2" for="startDate">Start Date:</label>
+                                        <input type="date" class="form-control" id="startDate">
+
+                                        <label class="pt-2" for="endDate">End Date:</label>
+                                        <input type="date" class="form-control" id="endDate">
+
+                                        <button class="btn btn-secondary mt-2" id="search-custom-date">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table for displaying profit -->
+                        <div class="table-responsive">
+                            <table id="profit-table" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Total Revenue</th>
+                                    <th>Total Cost</th>
+                                    <th>Total Profit</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <br>
+
+                        <!-- Table for displaying sales results -->
+                        <div class="table-responsive">
+                            <table id="sales-results-table" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Order Date</th>
+                                    <th>Quantity of Sold Product</th>
+                                    <th>Revenue</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer_part">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer_iner text-center">
+                        <p>2023 © Store Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="back-top" style="display: none">
+    <a title="Go to Top" href="#">
+        <i class="ti-angle-up"></i>
+    </a>
+</div>
+
+<!--    region Script   -->
+
+<script src="/js/jquery1-3.4.1.min.js"></script>
+<script src="/js/bootstrap1.min.js"></script>
+<script src="/js/metisMenu.js"></script>
+
+<script src="/vendors/niceselect/js/jquery.nice-select.min.js"></script>
+
+<script src="/js/custom.js"></script>
+<script src="/js/report.js"></script>
+
+<!--    endregion Script   -->
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+.list-group-item-action {
+    width: 100%;
+    z-index: 1;
+}
+
+.product-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.product-image {
+    width: 100px;
+    height: auto;
+    margin-right: 10px;
+    background-color: transparent;
+}
+
+.product-details {
+    flex-grow: 1;
+}
+
+.product-name {
+    margin: 10px;
+}
+
+.product-price {
+    margin: 0;
+    font-size: 15px;
+    color: #888;
+}

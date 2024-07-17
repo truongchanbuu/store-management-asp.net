@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <title>Store Management</title>
+    <link rel="icon" href="/img/SM_mini_logo.png" type="image/png"/>
+    <link rel="stylesheet" href="/css/bootstrap1.min.css"/>
+    <link rel="stylesheet" href="/css/style1.css"/>
+
+    <!-- Axios for fetching data -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body class="crm_body_bg">
+<nav class="sidebar dark_sidebar active_sidebar">
+    <div class="logo d-flex justify-content-between">
+        <a class="large_logo" href="/Home"><img src="/img/SM_logo.png" alt=""></a>
+        <a class="small_logo" href="/Home"><img src="/img/SM_mini_logo.png" alt=""></a>
+        <div class="sidebar_close_icon d-lg-none">
+            <i class="ti-close"></i>
+        </div>
+    </div>
+    <ul id="sidebar_menu" class="metismenu">
+        <li class="">
+            <a class="" href="/Home" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/dashboard.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Welcome</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/customers" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/5.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Customers</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/products" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/13.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Products</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/reports" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/21.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Reports</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/orders" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/8.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Point of Sale</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="main_content dashboard_part large_header_bg">
+    <div class="main_content_iner overly_inner">
+        <div class="container-fluid p-0">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="page_title_box d-flex align-items-center justify-content-between">
+                        <div class="page_title_left">
+                            <h3 class="f_s_30 f_w_700 dark_text">Point of Sales</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="white_card">
+
+                        <div class="white_card_header border_bottom_1px">
+                            <h4 class="card-title mb-0">Order Summary</h4>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="table-responsive order-details">
+                                <table class="table mb-0">
+                                    <tbody>
+                                    <tr>
+                                        <td class="order-label">OID:</td>
+                                        <td class="order-value" id="oidValue"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order-label">Customer Name:</td>
+                                        <td class="order-value" id="customerNameValue"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order-label">User Name:</td>
+                                        <td class="order-value" id="userNameValue"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order-label">Date Created:</td>
+                                        <td class="order-value" id="dateCreatedValue"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="table-responsive shopping-cart">
+                                <table class="table mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th class="border-top-0">Product</th>
+                                        <th class="border-top-0">Quantity</th>
+                                        <th class="border-top-0">Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="product-table-body"></tbody>
+                                </table>
+                            </div>
+
+                            <div class="total-payment">
+                                <table class="table mb-0">
+                                    <tbody>
+                                    <tr>
+                                        <td class="payment-title">Total</td>
+                                        <td class="text-dark">
+                                            <strong id="total-payment"></strong>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="white_card">
+
+                        <div class="white_card_header border_bottom_1px">
+                            <h4 class="card-title mb-0">Billing Details</h4>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card border mb-1 shadow-none">
+                                    <div class="white_card_header border_bottom_1px custom-accordion" id="headingOne">
+                                        <a class="text-dark d-flex justify-content-between" data-toggle="collapse"
+                                           data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            <span class="align-self-center">Cash</span>
+                                        </a>
+                                    </div>
+                                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                         data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="cash-received">Received :</label>
+                                                        <input type="text" class="form-control" id="cash-received"/>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="cash-return">Return :</label>
+                                                        <input disabled type="text" class="form-control"
+                                                               id="cash-return"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="place-order" type="button" class="btn_1 mt-1 mb-1 w-100">
+                                PLACE YOUR ORDER
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer_part">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer_iner text-center">
+                        <p>2023 © Store Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="back-top" style="display: none">
+    <a title="Go to Top" href="../#">
+        <i class="ti-angle-up"></i>
+    </a>
+</div>
+
+<!--    region Script   -->
+
+<script src="/js/jquery1-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+        integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/js/order-detail.js"></script>
+
+<!--    endregion Script   -->
+</body>
+</html>

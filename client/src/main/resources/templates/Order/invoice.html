@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <title>Store Management</title>
+    <link rel="icon" href="/img/SM_mini_logo.png" type="image/png"/>
+    <link rel="stylesheet" href="/css/bootstrap1.min.css"/>
+
+    <link rel="stylesheet" href="/vendors/themefy_icon/themify-icons.css"/>
+    <link rel="stylesheet" href="/vendors/niceselect/css/nice-select.css"/>
+
+    <link rel="stylesheet" href="/vendors/text_editor/summernote-bs4.css"/>
+    <link rel="stylesheet" href="/css/style1.css"/>
+
+    <link rel="stylesheet" href="/css/list-item-search.css"/>
+
+    <!-- Axios for fetching data -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body class="crm_body_bg">
+<nav class="sidebar dark_sidebar active_sidebar">
+    <div class="logo d-flex justify-content-between">
+        <a class="large_logo" href="/Home"><img src="/img/SM_logo.png" alt=""></a>
+        <a class="small_logo" href="/Home"><img src="/img/SM_mini_logo.png" alt=""></a>
+        <div class="sidebar_close_icon d-lg-none">
+            <i class="ti-close"></i>
+        </div>
+    </div>
+    <ul id="sidebar_menu" class="metismenu">
+        <li class="">
+            <a class="" href="/Home" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/dashboard.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Welcome</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/customers" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/5.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Customers</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/products" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/13.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Products</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/reports" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/21.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Reports</span>
+                </div>
+            </a>
+        </li>
+
+        <li class="">
+            <a class="" href="/orders" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <img src="/img/menu-icon/8.svg" alt="">
+                </div>
+                <div class="nav_title">
+                    <span>Point of Sale</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="main_content dashboard_part large_header_bg">
+    <div class="main_content_iner overly_inner">
+        <div class="container-fluid p-0">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="page_title_box d-flex align-items-center justify-content-between">
+                        <div class="page_title_left">
+                            <h3 class="f_s_30 f_w_700 dark_text">Point of Sales</h3>
+                        </div>
+                        <div>
+                            <button class="white_btn3 btn-cancel-order">Cancel</button>
+                            <button class="white_btn3 btn-create-new-order">New Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Search product -->
+                <div class="mb-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <input class="form-control" id="search-product-by-name" type="search"
+                                   placeholder="Search product by name or barcode..."/>
+                        </div>
+                        <div id="searchlist" class="list-group list-group-flush"></div>
+                    </form>
+                </div>
+
+                <div class="col-12 QA_section">
+                    <div class="card QA_table">
+                        <div class="card-header">Invoice: <strong class="current-date"></strong>
+                            <span class="float-end"><strong>Status:</strong> Pending</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive-sm">
+
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th class="right">Unit Cost</th>
+                                        <th class="center">Quantity</th>
+                                        <th class="right">Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-5"></div>
+                                <div class="col-lg-4 col-sm-5 ms-auto QA_section">
+
+                                    <table class="table table-clear QA_table">
+                                        <tbody>
+                                        <tr>
+                                            <td class="left"><strong>Total</strong></td>
+                                            <td class="right"><strong class="whole-total">$0.00</strong></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary w-100 m-2 modal-confirm-payment"
+                                    data-bs-toggle="modal" data-bs-target="#modal-customer">Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer_part">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer_iner text-center">
+                        <p>2023 © Store Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="back-top" style="display: none">
+    <a title="Go to Top" href="#">
+        <i class="ti-angle-up"></i>
+    </a>
+</div>
+
+<!--    region Modal Customer   -->
+
+<div class="modal fade" id="modal-customer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter customer phone number</p>
+                <div class="mb-3">
+                    <label for="customer-phone-number" class="col-form-label">Phone number:</label>
+                    <input type="text" class="form-control" id="customer-phone-number"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-target="#customer-information-form"
+                        data-bs-toggle="modal" data-bs-dismiss="modal">Create a new account
+                </button>
+                <button type="button" class="btn btn-primary confirm-payment">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--    endregion Modal Customer   -->
+
+<!--    region Customer Information Input   -->
+
+<div class="modal fade" id="customer-information-form" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="customer-information-form" tabindex="-1">
+    <div id="alert-container"></div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customer-information-form-label">
+                    Create a new account
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="customer-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="customer-name"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="col-form-label">Phone:</label>
+                        <input type="text" class="form-control" id="phone"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="customer-email" class="col-form-label">Email:</label>
+                        <input type="email" class="form-control" id="customer-email" required/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-target="#modal-customer" data-bs-toggle="modal"
+                        data-bs-dismiss="modal" id="open-modal-customer-button">
+                    Back to first
+                </button>
+                <button class="btn btn-primary btn-create-customer">
+                    Create
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">
+    Open first modal
+</a>
+
+<!--    endregion Customer Information Input    -->
+
+<!--    region Delete confirm modal    -->
+<div class="modal fade" id="remove-modal" tabindex="-1"
+     role="dialog" aria-labelledby="remove-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="remove-modal-label">
+                    Delete Confirmation
+                </h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you really want to delete the product?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-danger btn-confirm-delete">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--    endregion Delete confirm modal    -->
+
+<!--    region Script   -->
+
+<script src="/js/jquery1-3.4.1.min.js"></script>
+<script src="/js/bootstrap1.min.js"></script>
+<script src="/js/metisMenu.js"></script>
+
+<script src="/vendors/niceselect/js/jquery.nice-select.min.js"></script>
+
+<script src="/vendors/text_editor/summernote-bs4.js"></script>
+
+<script src="/js/custom.js"></script>
+<script src="/js/invoice-rest.js"></script>
+
+<!--    endregion Script   -->
+
+</body>
+</html>

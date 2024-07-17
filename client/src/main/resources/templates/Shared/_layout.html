@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Store Management</title>
+    <link rel="icon" href="/img/SM_mini_logo.png" type="image/png"/>
+    <link rel="stylesheet" href="/css/bootstrap1.min.css"/>
+
+    <link rel="stylesheet" href="/vendors/themefy_icon/themify-icons.css"/>
+    <link rel="stylesheet" href="/vendors/niceselect/css/nice-select.css"/>
+
+    <link rel="stylesheet" href="/vendors/font_awesome/css/all.min.css"/>
+
+    <link rel="stylesheet" href="/vendors/datatable/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="/vendors/datatable/css/responsive.dataTables.min.css"/>
+    <link rel="stylesheet" href="/vendors/datatable/css/buttons.dataTables.min.css"/>
+
+    <link rel="stylesheet" href="/vendors/text_editor/summernote-bs4.css"/>
+
+    <link rel="stylesheet" href="/css/style1.css"/>
+
+</head>
+
+
+<body class="crm_body_bg">
+<header>
+    <nav class="sidebar dark_sidebar active_sidebar">
+        <div class="logo d-flex justify-content-between">
+            <a class="large_logo" href="/Home"><img src="/img/SM_logo.png" alt=""></a>
+            <a class="small_logo" href="/Home"><img src="/img/SM_mini_logo.png" alt=""></a>
+            <div class="sidebar_close_icon d-lg-none">
+                <i class="ti-close"></i>
+            </div>
+        </div>
+        <ul id="sidebar_menu" class="metismenu">
+            <li class="">
+                <a class="" href="/Home" aria-expanded="false">
+                    <div class="nav_icon_small">
+                        <img src="/img/menu-icon/dashboard.svg" alt="">
+                    </div>
+                    <div class="nav_title">
+                        <span>Welcome</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="">
+                <a class="" href="/customers" aria-expanded="false">
+                    <div class="nav_icon_small">
+                        <img src="/img/menu-icon/5.svg" alt="">
+                    </div>
+                    <div class="nav_title">
+                        <span>Customers</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="">
+                <a class="" href="/products" aria-expanded="false">
+                    <div class="nav_icon_small">
+                        <img src="/img/menu-icon/13.svg" alt="">
+                    </div>
+                    <div class="nav_title">
+                        <span>Products</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="">
+                <a class="" href="/reports" aria-expanded="false">
+                    <div class="nav_icon_small">
+                        <img src="/img/menu-icon/21.svg" alt="">
+                    </div>
+                    <div class="nav_title">
+                        <span>Reports</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="">
+                <a class="" href="/orders" aria-expanded="false">
+                    <div class="nav_icon_small">
+                        <img src="/img/menu-icon/8.svg" alt="">
+                    </div>
+                    <div class="nav_title">
+                        <span>Point of Sale</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<section class="main_content dashboard_part large_header_bg">
+    <!--    region SubHeader    -->
+    <div class="container-fluid g-0">
+        <div class="row">
+            <div class="col-lg-12 p-0 ">
+                <div class="header_iner d-flex justify-content-end align-items-center">
+                    <div class="header_right d-flex justify-content-between align-items-center">
+                        <div class="profile_info mr_15 w-100">
+                            <img th:src="${user.getAvatar()}" alt="#">
+                            <div class="profile_info_iner">
+                                <div class="profile_author_name">
+                                    <p>Welcome, </p>
+                                    <h5 th:if="${user} != null" th:text="${user.getUsername()}"></h5>
+                                </div>
+                                <div class="profile_info_details">
+                                    <a th:href="@{/profile}">My Profile</a>
+                                    <a th:href="@{/admin/users}" th:if="${user.getRole().toString() != 'EMPLOYEE'}">User
+                                        Management
+                                    </a>
+                                    <a th:href="@{/owner}" th:if="${user.getRole().toString() == 'OWNER'}">
+                                        Dashboard
+                                    </a>
+                                    <br>
+                                    <a th:href="@{/auth/logout}">Log Out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    endregion SubHeader-->
+
+    <div class="main_content_iner overly_inner ">
+        <div class="container-fluid p-0 ">
+            <div layout:fragment="content">
+                <div class="row">
+                    <h1>Not Found</h1>
+                    <p>The requested URL was not found on this server.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--    region Footer   -->
+    <div class="footer_part">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer_iner text-center">
+                        <p>2023 © Store Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    endregion Footer   -->
+</section>
+
+<div layout:fragment="grid-modal">
+    No modal defined
+</div>
+
+<!-- region Status Modal -->
+
+<div th:if="${error != null and error != ''}" class="modal fade bd-example-modal-sm show" tabindex="-1"
+     aria-labelledby="mySmallModalLabel" aria-modal="true" role="dialog" id="error_modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content p-4 alert text-white bg-danger" role="alert">
+            <div class="alert-text text-center" style="font-weight: bolder">
+                <span th:text="${error}">Error message</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:if="${success != null and success != ''}" class="modal fade bd-example-modal-sm show" tabindex="-1"
+     aria-labelledby="mySmallModalLabel" aria-modal="true" role="dialog" id="success_modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content p-4 alert text-white bg-success" role="alert">
+            <div class="alert-text text-center" style="font-weight: bolder">
+                <span th:text="${success}">Success message</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- endregion Status Modal    -->
+
+<!-- region Script    -->
+
+<script src="/js/jquery1-3.4.1.min.js"></script>
+<script src="/js/bootstrap1.min.js"></script>
+<script src="/js/metisMenu.js"></script>
+
+<script src="/vendors/niceselect/js/jquery.nice-select.min.js"></script>
+
+<script src="/vendors/datatable/js/jquery.dataTables.min.js"></script>
+<script src="/vendors/datatable/js/dataTables.responsive.min.js"></script>
+<script src="/vendors/datatable/js/dataTables.buttons.min.js"></script>
+<script src="/vendors/datatable/js/buttons.flash.min.js"></script>
+<script src="/vendors/datatable/js/jszip.min.js"></script>
+<script src="/vendors/datatable/js/pdfmake.min.js"></script>
+<script src="/vendors/datatable/js/vfs_fonts.js"></script>
+<script src="/vendors/datatable/js/buttons.html5.min.js"></script>
+<script src="/vendors/datatable/js/buttons.print.min.js"></script>
+
+<script src="/js/custom.js"></script>
+
+<script>
+    function showGridModal() {
+        $('#grid_modal').modal('show');
+    }
+</script>
+
+<script th:if="${error != null and error != '' or success != null and success != ''}">
+    $(document).ready(function () {
+        // Check if error exists
+        if ("${error}" != null && "${error}" != '') {
+            $('#error_modal').modal('show');
+        }
+
+        // Check if success exists
+        if ("${success}" != null && "${success}" != '') {
+            $('#success_modal').modal('show');
+        }
+    });
+</script>
+
+<script layout:fragment="customScript">
+
+</script>
+
+
+<!-- endregion Script -->
+</body>
+</html>

@@ -1,0 +1,316 @@
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_layout.html}">
+<body>
+
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
+                <div class="page_title_left d-flex align-items-center">
+                    <h3 class="f_s_25 f_w_700 dark_text mr_30">User List</h3>
+                </div>
+                <div class="page_title_right">
+                    <div class="page_date_button d-flex align-items-center">
+                        <img src="/img/icon/calender_icon.svg" alt="">
+                        <span th:text="${#dates.format(#dates.createNow(), 'MMMM d, yyyy')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="white_card card_height_100 mb_30 pt-4">
+                <div class="white_card_body">
+                    <div class="QA_section">
+
+                        <!--    region Search   -->
+                        <div class="white_box_tittle list_header">
+                            <div class="box_right d-flex lms_block">
+                                <div class="serach_field_2">
+                                    <div class="search_inner">
+                                        <form id="searchForm" action="/admin/users" method="get">
+                                            <div class="search_field">
+                                                <input type="text" name="text" placeholder="Search by Username ...">
+                                            </div>
+                                            <button type="submit"><i class="ti-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="add_button ms-2">
+                                    <a href="javascript:void(0);" class="btn_1" onclick="submitSearchForm()">Search</a>
+                                </div>
+                            </div>
+                            <div class="add_button ms-2">
+                                <a href="#" class="btn_1 border-primary bg-primary" onclick="showCreateUserModal()">Create</a>
+                            </div>
+                        </div>
+                        <!--    endregion Search   -->
+
+                        <!--    region Table   -->
+                        <div class="QA_table mb_30">
+                            <table class="table lms_table_active dataTable no-footer dtr-inline"
+                                   id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info"
+                                   style="width: 944px;">
+                                <thead>
+                                <tr role="row">
+                                    <th scope="col" class="sorting_asc" tabindex="0"
+                                        aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                        style="width: 35px;" aria-sort="ascending"
+                                        aria-label="id: activate to sort column descending">No.
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 109px;"
+                                        aria-label="Username: activate to sort column ascending">Username
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 165px;"
+                                        aria-label="Email Address: activate to sort column ascending">Email Address
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 75px;"
+                                        aria-label="Role: activate to sort column ascending">Role
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 128px;"
+                                        aria-label="Status: activate to sort column ascending">Status
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 134px;"
+                                        aria-label="Action: activate to sort column ascending">Action
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user, iterStat : ${users}" th:class="${iterStat.odd} ? 'odd' : 'even'"
+                                    th:id="${user.getId()}">
+                                    <td tabindex="0" class="sorting_1">
+                                        <a href="#" class="question_content" th:text="${iterStat.index + 1}"></a>
+                                    </td>
+                                    <td th:text="${user.getUsername()}"></td>
+                                    <td>
+                                        <a href="#" class="__cf_email__" th:text="${user.getEmail()}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#"
+                                           th:text="${#strings.capitalize(#strings.toLowerCase(user.getRole()))}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#"
+                                           th:class="${user.getStatus().toString() == 'LOCKED'} ? 'status_btn orange_bg' : 'status_btn'">
+                                            <span th:text="${#strings.toLowerCase(user.getStatus())}"></span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="action_btns d-flex">
+                                            <a href="#" class="action_btn mr_10" onclick="showUserDetailsModal(this)"
+                                               th:data-user-id="${user.getId()}">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="action_btn" th:data-user-id="${user.getId()}"
+                                               onclick="showUserDeleteModal(this)">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--    endregion Table   -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--    region Modals   -->
+
+<div layout:fragment="grid-modal">
+
+    <!--    region User Details    -->
+
+    <div class="modal fade show" id="user_details" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="width: 400px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">User Details</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/admin/users/update" method="post" id="edit_form">
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="card custom-card mb-0">
+                                <div class="row">
+                                    <div class="card-profile col-lg-12 mb-3">
+                                        <img class="rounded-circle" th:src="${user.getAvatar()}" data-original-title=""
+                                             title="Your avatar" alt="Your profile image here" style="cursor: pointer;"
+                                             id="avatar">
+                                    </div>
+                                    <div class="text-center profile-details d-flex justify-content-center flex-column align-items-center">
+                                        <h3 id="name">Duy Nguyen</h3>
+                                        <div class="col-6">
+                                            <input name="oldRole" type="hidden" id="old_role">
+                                            <select name="role" id="edit_user_role"
+                                                    th:class="${user.getRole().toString() != 'OWNER'} ? 'nice_Select2 nice_Select_line wide m-2 disabled' : 'nice_Select2 nice_Select_line wide m-2'"
+                                            >
+                                                <option value="OWNER">OWNER</option>
+                                                <option value="ADMIN">ADMIN</option>
+                                                <option value="EMPLOYEE">EMPLOYEE</option>
+                                            </select>
+                                        </div>
+                                        <h6 id="email">admin@gmail.com</h6>
+                                        <input type="hidden" name="status" id="input_status">
+                                        <a href="#" id="edit_user_status"
+                                           th:class="${user.getStatus() == 'LOCKED'} ? 'status_btn orange_bg' : 'status_btn'"
+                                           onclick="toggleUserStatus()">
+                                            <span th:text="${#strings.toLowerCase(user.getStatus())}"
+                                                  id="status"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a th:href="@{/admin/users/reset-password/{id}(id=${user.id})}"
+                           class="btn btn-success border-0" id="reset_password">
+                            Reset Password
+                        </a>
+                        <button type="submit" class="btn btn-warning text-white">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--    endregion User Details    -->
+
+    <!--    region Create Users    -->
+
+    <div class="modal fade show" id="create_user" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="width: 400px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createUserModalLongTitle">Create new User</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/admin/users/create" method="post">
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="card custom-card" id="create_user_card">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="common_input mb_15">
+                                            <input name="email" type="text" placeholder="Email Address">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <p class="text-info" style="font-weight: lighter">
+                                        &#x2A;Accept <strong>gmail.com</strong> domain only!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--    endregion Create USer    -->
+
+    <!--    region Delete Users    -->
+
+    <div class="modal fade show" id="delete_user" tabindex="-1" role="dialog"
+         aria-labelledby="deleteModalLongTitle" aria-modal="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLongTitle">Delete User</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/admin/users/delete" method="post">
+                    <div class="modal-body">
+                        Are you sure you want to delete: <span style="font-weight: bolder" id="delete_user_name"></span>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--    endregion Delete Users   -->
+
+</div>
+
+<!--    endregion Modals   -->
+
+<script th:inline="javascript" layout:fragment="customScript">
+    var userList = [[${users}]];
+
+    function showUserDetailsModal(element) {
+        var userId = $(element).data("user-id");
+        var user = userList.find(user => user.id === userId);
+
+        $("#edit_form").attr("action", "/admin/users/update/" + userId);
+        $("#avatar").attr("src", user.avatar);
+        $("#name").text(user.username);
+        $("#old_role").val(user.role);
+        $("#edit_user_role").val(user.role).niceSelect("update");
+        $("#email").text(user.email);
+        $("#status").text(user.status);
+        $("#input_status").val(user.status);
+        $("#reset_password").attr("href", "/admin/users/reset-password/" + userId);
+
+        if (user.status === "LOCKED") $("#edit_user_status").addClass("orange_bg");
+        else $("#edit_user_status").removeClass("orange_bg");
+
+        $("#user_details").modal("show");
+    }
+
+    function toggleUserStatus() {
+        var newStatus = $("#status").text() === "LOCKED" ? "NORMAL" : "LOCKED";
+        $("#status").text(newStatus);
+        $("#input_status").val(newStatus);
+        $("#edit_user_status").toggleClass("orange_bg");
+    }
+
+    function showCreateUserModal() {
+        $('#create_user').modal('show');
+    }
+
+    function showUserDeleteModal(element) {
+        var userId = $(element).data("user-id");
+        var user = userList.find(user => user.id === userId);
+
+        $("#delete_user form").attr("action", "/admin/users/delete/" + userId);
+        $("#delete_user_name").text(user.username);
+        $("#delete_user").modal("show");
+    }
+
+    function submitSearchForm() {
+        document.getElementById("searchForm").submit();
+    }
+</script>
+</body>
+</html>

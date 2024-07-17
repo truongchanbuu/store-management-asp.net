@@ -1,0 +1,436 @@
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_layout.html}">
+<body>
+
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
+                <div class="page_title_left d-flex align-items-center">
+                    <h3 class="f_s_25 f_w_700 dark_text mr_30">Product List</h3>
+                </div>
+                <div class="page_title_right">
+                    <div class="page_date_button d-flex align-items-center">
+                        <img src="/img/icon/calender_icon.svg" alt="">
+                        <span th:text="${#dates.format(#dates.createNow(), 'MMMM d, yyyy')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="white_card card_height_100 mb_30 pt-4">
+                <div class="white_card_body">
+                    <div class="QA_section">
+
+                        <!--    region Search   -->
+                        <div class="white_box_tittle list_header">
+                            <div class="box_right d-flex lms_block">
+                                <div class="serach_field_2">
+                                    <div class="search_inner">
+                                        <form id="searchForm" action="/products" method="get">
+                                            <div class="search_field">
+                                                <input type="text" name="text"
+                                                       placeholder="Search by Name ...">
+                                            </div>
+                                            <button type="submit"><i class="ti-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="add_button ms-2">
+                                    <a href="javascript:void(0);" class="btn_1" onclick="submitSearchForm()">Search</a>
+                                </div>
+                            </div>
+                            <div th:if="${user.getRole().toString() != 'EMPLOYEE'}" class="add_button ms-2">
+                                <a href="#" class="btn_1 border-primary bg-primary" onclick="showCreateProductModal()">Create</a>
+                            </div>
+                        </div>
+                        <!--    endregion Search   -->
+
+                        <!--    region Table   -->
+                        <div class="QA_table mb_30">
+                            <table class="table lms_table_active dataTable no-footer dtr-inline"
+                                   id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info"
+                                   style="width: 944px;">
+                                <thead>
+                                <tr role="row">
+                                    <th scope="col" class="sorting_asc" tabindex="0"
+                                        aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                        style="width: 35px;" aria-sort="ascending"
+                                        aria-label="id: activate to sort column descending">No.
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 109px;"
+                                        aria-label="Name: activate to sort column ascending">Name
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 165px;"
+                                        aria-label="Category: activate to sort column ascending">Category
+                                    </th>
+                                    <th th:if="${user.getRole().toString() != 'EMPLOYEE'}" scope="col" class="sorting"
+                                        tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 75px;"
+                                        aria-label="Import Price: activate to sort column ascending">Import Price
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 128px;"
+                                        aria-label="Retail Price: activate to sort column ascending">Retail Price
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 128px;"
+                                        aria-label="Quantity: activate to sort column ascending">Quantity
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 128px;"
+                                        aria-label="Quantity: activate to sort column ascending">Created At
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 134px;"
+                                        aria-label="Action: activate to sort column ascending">Action
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="product, iterStat : ${products}"
+                                    th:class="${iterStat.odd} ? 'odd' : 'even'"
+                                    th:id="${product.getPid()}">
+                                    <td tabindex="0" class="sorting_1">
+                                        <a href="#" class="question_content" th:text="${iterStat.index + 1}"></a>
+                                    </td>
+                                    <td th:text="${product.getName()}"></td>
+                                    <td th:text="${product.getCategory()}"></td>
+                                    <td th:if="${user.getRole().toString() != 'EMPLOYEE'}">
+                                        <a href="#" th:text="${product.getImportPrice()}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#" th:text="${product.getRetailPrice()}"></a>
+                                    </td>
+                                    <td th:text="${product.getQuantity()}"></td>
+                                    <td th:text="${product.getCreatedAt().toLocalDate()}"></td>
+                                    <td>
+                                        <div class="action_btns d-flex">
+                                            <a href="#" class="action_btn mr_10" onclick="showProductDetailsModal(this)"
+                                               th:data-product-id="${product.getPid()}">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                            <a th:if="${user.getRole().toString() != 'EMPLOYEE'}" href="#"
+                                               class="action_btn" th:data-product-id="${product.getPid()}"
+                                               onclick="showProductDeleteModal(this)">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--    endregion Table   -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div layout:fragment="grid-modal">
+
+    <!--    region Product Details    -->
+
+    <div class="modal fade show" id="product_details" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 1000px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Product Details</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/admin/products/update" method="post" id="edit_form">
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="card custom-card mb-0">
+                                <div class="row">
+                                    <div class="col-lg-6 align-self-center">
+                                        <img src="" alt="Product image here"
+                                             class="mx-auto d-block" height="300"
+                                             id="illustrator">
+                                    </div>
+
+                                    <div class="col-lg-6 align-self-center">
+                                        <div class="single-pro-detail">
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <div class="common_input mb_15">
+                                                        <label for="name_input"
+                                                               style="font-size: 14px; font-weight: bold; margin-bottom: 5px">Name</label>
+                                                        <input name="name" type="text" placeholder="Name"
+                                                               id="name_input">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="category_input"
+                                                           style="font-size: 14px; font-weight: bold; margin-bottom: 5px">Category</label>
+                                                    <select name="category"
+                                                            class="nice_Select2 nice_Select_line wide m-0"
+                                                            id="category_input">
+                                                        <option value="PHONE">PHONE</option>
+                                                        <option value="TABLET">TABLET</option>
+                                                        <option value="LAPTOP">LAPTOP</option>
+                                                        <option value="PC">PC</option>
+                                                        <option value="ACCESSORY">ACCESSORY</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <div class="common_input mb_15">
+                                                        <label for="quantity_input"
+                                                               style="font-size: 14px; font-weight: bold; margin-bottom: 5px">Quantity</label>
+                                                        <input name="quantity" type="number" placeholder="Quantity"
+                                                               id="quantity_input">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="common_input mb_15">
+                                                        <label for="barcode_input"
+                                                               style="font-size: 14px; font-weight: bold; margin-bottom: 5px">Barcode</label>
+                                                        <input name="barcode" type="text" placeholder="Barcode"
+                                                               id="barcode_input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div th:if="${user.getRole().toString() != 'EMPLOYEE'}" class="col-6">
+                                                    <label for="import_price_input"
+                                                           style="font-size: 14px; font-weight: bold; margin-bottom: 5px">Import
+                                                        price</label>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-text">
+                                                            <span class="">$</span>
+                                                        </div>
+                                                        <input name="importPrice" type="text" class="form-control"
+                                                               aria-label="Amount (to the nearest dollar)"
+                                                               placeholder="Import Price" id="import_price_input">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="retail_price_input"
+                                                           style="font-size: 14px; font-weight: bold; margin-bottom: 5px">Retail
+                                                        Price</label>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-text">
+                                                            <span class="">$</span>
+                                                        </div>
+                                                        <input name="retailPrice" type="text" class="form-control"
+                                                               aria-label="Amount (to the nearest dollar)"
+                                                               placeholder="Retail Price" id="retail_price_input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="common_input mb_15">
+                                                        <label for="illustrator_input"
+                                                               style="font-size: 14px; font-weight: bold; margin-bottom: 5px">Image
+                                                            URL</label>
+                                                        <input name="illustrator" type="text" placeholder="Image URL"
+                                                               id="illustrator_input">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <div class="row align-left">
+                            <p style="font-size: 11px;">Created At: <span id="createdAt">20/12/2023</span></p>
+                            <p style="font-size: 11px;">Updated At: <span id="updatedAt">20/12/2023</span></p>
+                        </div>
+                        <button th:if="${user.getRole().toString() != 'EMPLOYEE'}" type="submit"
+                                class="btn btn-warning text-white">Update
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--    endregion Product Details    -->
+
+    <!--    region Create Product    -->
+
+    <div class="modal fade show" id="create_product" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
+         aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 1000px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createProductModalLongTitle">Create new Product</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/admin/products/create" method="post">
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="card custom-card" id="create_product_card">
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="common_input mb_15">
+                                            <input name="name" type="text" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <select name="category" class="nice_Select2 nice_Select_line wide m-0"
+                                        >
+                                            <option value="PHONE">PHONE</option>
+                                            <option value="TABLET">TABLET</option>
+                                            <option value="LAPTOP">LAPTOP</option>
+                                            <option value="PC">PC</option>
+                                            <option value="ACCESSORY">ACCESSORY</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="common_input mb_15">
+                                            <input name="quantity" type="number" placeholder="Quantity">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-text">
+                                                <span class="">$</span>
+                                            </div>
+                                            <input name="importPrice" type="text" class="form-control"
+                                                   aria-label="Amount (to the nearest dollar)"
+                                                   placeholder="Import Price">
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-text">
+                                                <span class="">$</span>
+                                            </div>
+                                            <input name="retailPrice" type="text" class="form-control"
+                                                   aria-label="Amount (to the nearest dollar)"
+                                                   placeholder="Retail Price">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="common_input mb_15">
+                                            <input name="barcode" type="text" placeholder="Barcode">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="common_input mb_15">
+                                            <input name="illustrator" type="text" placeholder="Image URL">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--    endregion Create Product    -->
+
+    <!--    region Delete Product    -->
+
+    <div class="modal fade show" id="delete_product" tabindex="-1" role="dialog"
+         aria-labelledby="deleteModalLongTitle" aria-modal="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLongTitle">Delete Product</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/admin/users/delete" method="post">
+                    <div class="modal-body">
+                        Are you sure you want to delete:
+                        <span style="font-weight: bolder" id="delete_product_name"></span>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--    endregion Delete Product   -->
+
+</div>
+
+
+<script th:inline="javascript" layout:fragment="customScript">
+    var productList = [[${products}]];
+
+    function showProductDetailsModal(element) {
+        var productId = $(element).data("product-id");
+        var product = productList.find(product => product.pid === productId);
+
+        $("#edit_form").attr("action", "/admin/products/update/" + productId);
+        $("#name_input").val(product.name);
+        $("#category_input").val(product.category);
+        $("#quantity_input").val(product.quantity);
+        $("#barcode_input").val(product.barcode);
+        $("#import_price_input").val(product.importPrice);
+        $("#retail_price_input").val(product.retailPrice);
+        $("#illustrator_input").val(product.illustrator);
+        $("#createdAt").text(product.createdAt ? product.createdAt.split("T")[0] : "");
+        $("#updatedAt").text(product.updatedAt ? product.updatedAt.split("T")[0] : "");
+        $("#illustrator").attr("src", product.illustrator);
+
+        $("#product_details").modal("show");
+    }
+
+    function submitSearchForm() {
+        document.getElementById("searchForm").submit();
+    }
+
+    function showProductDeleteModal(element) {
+        var productId = $(element).data("product-id");
+        var product = productList.find(product => product.pid === productId);
+
+        $("#delete_product form").attr("action", "/admin/products/delete/" + productId);
+        $("#delete_product_name").text(product.name);
+        $("#delete_product").modal("show");
+    }
+
+    function showCreateProductModal() {
+        $('#create_product').modal('show');
+    }
+</script>
+</body>
+</html>

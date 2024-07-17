@@ -1,0 +1,130 @@
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_layout.html}">
+<body>
+
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
+                <div class="page_title_left d-flex align-items-center">
+                    <h3 class="f_s_25 f_w_700 dark_text mr_30">Customer List</h3>
+                </div>
+                <div class="page_title_right">
+                    <div class="page_date_button d-flex align-items-center">
+                        <img src="/img/icon/calender_icon.svg" alt="">
+                        <span th:text="${#dates.format(#dates.createNow(), 'MMMM d, yyyy')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="white_card card_height_100 mb_30 pt-4">
+                <div class="white_card_body">
+                    <div class="QA_section">
+
+                        <!--    region Search   -->
+                        <div class="white_box_tittle list_header">
+                            <div class="box_right d-flex lms_block">
+                                <div class="serach_field_2">
+                                    <div class="search_inner">
+                                        <form id="searchForm" action="/customers" method="get">
+                                            <div class="search_field">
+                                                <input type="text" name="name"
+                                                       placeholder="Search by Name ...">
+                                            </div>
+                                            <button type="submit"><i class="ti-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="add_button ms-2">
+                                    <a href="javascript:void(0);" class="btn_1" onclick="submitSearchForm()">Search</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--    endregion Search   -->
+
+                        <!--    region Table   -->
+                        <div class="QA_table mb_30">
+                            <table class="table lms_table_active dataTable no-footer dtr-inline"
+                                   id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info"
+                                   style="width: 944px;">
+                                <thead>
+                                <tr role="row">
+                                    <th scope="col" class="sorting_asc" tabindex="0"
+                                        aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                        style="width: 35px;" aria-sort="ascending"
+                                        aria-label="id: activate to sort column descending">No.
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 109px;"
+                                        aria-label="Name: activate to sort column ascending">Name
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 165px;"
+                                        aria-label="Email Address: activate to sort column ascending">Email Address
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 75px;"
+                                        aria-label="Phone: activate to sort column ascending">Phone
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 128px;"
+                                        aria-label="Point: activate to sort column ascending">Point
+                                    </th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+                                        rowspan="1" colspan="1" style="width: 134px;"
+                                        aria-label="Action: activate to sort column ascending">Action
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="customer, iterStat : ${customers}"
+                                    th:class="${iterStat.odd} ? 'odd' : 'even'"
+                                    th:id="${customer.getCustId()}">
+                                    <td tabindex="0" class="sorting_1">
+                                        <a href="#" class="question_content" th:text="${iterStat.index + 1}"></a>
+                                    </td>
+                                    <td th:text="${customer.getName()}"></td>
+                                    <td>
+                                        <a href="#" class="__cf_email__" th:text="${customer.getEmail()}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#" th:text="${customer.getPhone()}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="question_content" th:text="${customer.getPoint()}"></a>
+                                    </td>
+                                    <td>
+                                        <div class="action_btns d-flex">
+                                            <a class="action_btn mr_10"
+                                               th:href="@{/customers/{custId}(custId=${customer.custId})}">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--    endregion Table   -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="customScript">
+    function submitSearchForm() {
+        document.getElementById("searchForm").submit();
+    }
+</script>
+
+</body>
+</html>
